@@ -26,7 +26,9 @@ type ExtractTextResponse struct {
 	Text string `json:"text"`
 }
 
-// ExtractTextFromImage extracts text from a base64 encoded image using Amazon Textract
+// This function `ExtractTextFromImage` is a method of the `TextractClient` struct. It takes a base64
+// encoded image as input, decodes it, and then uses the AWS Textract service to extract text from the
+// image.
 func (t *TextractClient) ExtractTextFromImage(base64Image string) (*ExtractTextResponse, error) {
 	imageBytes, err := base64.StdEncoding.DecodeString(base64Image)
 	if err != nil {

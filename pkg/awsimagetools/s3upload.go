@@ -32,7 +32,8 @@ type UploadResponse struct {
 	URL string `json:"url"`
 }
 
-// UploadToS3 uploads a base64 encoded image to an S3 bucket and returns the URL
+// This `UploadToS3` function in the `S3Uploader` struct is responsible for uploading an image to an
+// AWS S3 bucket. Here is a breakdown of what the function does:
 func (u *S3Uploader) UploadToS3(base64Image, bucketName, imageName, region, accessKeyID, secretAccessKey string) (*UploadResponse, error) {
 	imageBytes, err := base64.StdEncoding.DecodeString(base64Image)
 	if err != nil {

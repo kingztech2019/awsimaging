@@ -20,7 +20,9 @@ func NewRekognitionClient(clients *awsclients.AWSClients) *RekognitionClient {
 	return &RekognitionClient{client: clients.RekognitionClient}
 }
 
-// DetectLabels detects labels in the given image bytes
+// This function `DetectLabels` is a method of the `RekognitionClient` struct. It takes an `imagePath`
+// as input, reads the image file from the specified path, and then uses the AWS Rekognition client to
+// detect labels in the image.
 func (r *RekognitionClient) DetectLabels(imagePath string) (*rekognition.DetectLabelsOutput, error) {
 	imageBytes, err := ioutil.ReadFile(imagePath)
 	if err != nil {
