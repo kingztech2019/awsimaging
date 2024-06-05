@@ -10,11 +10,6 @@
 
 ## Installation
 
-To install the `awsimaging` package, run:
-
-```sh
-go get github.com/kingztech2019/awsimaging
-
 This README covers the setup, usage, and functionality of the package, including examples.
 
 ```markdown
