@@ -15,7 +15,7 @@ To install the `awsimaging` package, run:
 ```sh
 go get github.com/kingztech2019/awsimaging
 
-Here's a detailed README for your `awsimaging` package. This README covers the setup, usage, and functionality of the package, including examples.
+This README covers the setup, usage, and functionality of the package, including examples.
 
 ```markdown
 # awsimaging
@@ -129,26 +129,40 @@ Use the S3 uploader to upload a base64 encoded image to an S3 bucket and get the
 package main
 
 import (
-    "fmt"
-    "log"
-    "github.com/kingztech2019/awsimaging/awsclients"
+	"encoding/json"
+	"fmt"
+	"log"
+
+	"github.com/kingztech2019/awsimaging/awsclients"
 	"github.com/kingztech2019/awsimaging/pkg/awsimagetools"
 )
 
 func main() {
-    awsClients, err := awsclients.NewAWSClients("us-west-2", "your-access-key-id", "your-secret-access-key")
-    if err != nil {
-        log.Fatalf("failed to create AWS clients: %v", err)
-    }
+	region := "us-west-2"
+	accessKeyID := "your-access-key-id"
+	secretAccessKey := "your-secret-access-key"
+	bucketName := "your-s3-bucket-name"
+	imageName := "your-image-name.jpg"
+	base64Image := "your-base64-encoded-image-string"
 
-    s3Uploader := awsimagetools.NewS3Uploader(awsClients)
-    base64Image := "your-base64-encoded-image-string"
-    s3Url, err := s3Uploader.UploadToS3(base64Image, "your-s3-bucket-name", "your-image-name.jpg")
-    if err != nil {
-        log.Fatalf("failed to upload image to S3: %v", err)
-    }
-    fmt.Printf("Image uploaded to: %s\n", s3Url)
+	awsClients, err := awsclients.NewAWSClients(region, accessKeyID, secretAccessKey)
+	if err != nil {
+		log.Fatalf("failed to create AWS clients: %v", err)
+	}
+
+	s3Uploader := awsimagetools.NewS3Uploader(awsClients)
+	s3Url, err := s3Uploader.UploadToS3(base64Image, bucketName, imageName, region, accessKeyID, secretAccessKey)
+	if err != nil {
+		log.Fatalf("failed to upload image to S3: %v", err)
+	}
+
+	s3UrlJSON, err := json.Marshal(s3Url)
+	if err != nil {
+		log.Fatalf("failed to encode S3 URL to JSON: %v", err)
+	}
+	fmt.Printf("S3 Upload URL JSON: %s\n", string(s3UrlJSON))
 }
+
 ```
 
 ### Extract Text with Textract

@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/credentials"
@@ -60,7 +59,6 @@ func (u *S3Uploader) UploadToS3(base64Image, bucketName, imageName, region, acce
 	if bucketRegion == "" {
 		bucketRegion = "us-east-1" // Default region
 	}
-	log.Println(bucketRegion, accessKeyID, secretAccessKey)
 
 	// Create a new S3 client with the correct region
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
