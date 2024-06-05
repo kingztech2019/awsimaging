@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/kingztech2019/awsimaging/internal/awsclients"
+	"github.com/kingztech2019/awsimaging/awsclients"
 	"github.com/kingztech2019/awsimaging/pkg/awsimagetools"
 )
 

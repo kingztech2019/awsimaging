@@ -50,8 +50,7 @@ The package is organized as follows:
 
 ```
 awsimagetools/
-├── internal/
-│   └── awsclients/
+├──awsclients/
 │       └── clients.go
 ├── awsimagetools.go
 ├── rekognition.go
@@ -77,8 +76,8 @@ package main
 
 import (
     "log"
-    "github.com/kingzmentech2019/awsimagetools"
-    "github.com/kingzmentech2019/awsimagetools/internal/awsclients"
+   "github.com/kingztech2019/awsimaging/awsclients"
+	"github.com/kingztech2019/awsimaging/pkg/awsimagetools"
 )
 
 func main() {
@@ -101,8 +100,8 @@ package main
 import (
     "fmt"
     "log"
-    "github.com/kingzmentech2019/awsimagetools"
-    "github.com/kingzmentech2019/awsimagetools/internal/awsclients"
+    "github.com/kingztech2019/awsimaging/awsclients"
+	"github.com/kingztech2019/awsimaging/pkg/awsimagetools"
 )
 
 func main() {
@@ -132,8 +131,8 @@ package main
 import (
     "fmt"
     "log"
-    "github.com/kingzmentech2019/awsimagetools"
-    "github.com/kingzmentech2019/awsimagetools/internal/awsclients"
+    "github.com/kingztech2019/awsimaging/awsclients"
+	"github.com/kingztech2019/awsimaging/pkg/awsimagetools"
 )
 
 func main() {
@@ -162,8 +161,8 @@ package main
 import (
     "fmt"
     "log"
-    "github.com/kingzmentech2019/awsimagetools"
-    "github.com/kingzmentech2019/awsimagetools/internal/awsclients"
+   "github.com/kingztech2019/awsimaging/awsclients"
+	"github.com/kingztech2019/awsimaging/pkg/awsimagetools"
 )
 
 func main() {

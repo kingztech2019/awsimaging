@@ -7,7 +7,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/rekognition"
 	"github.com/aws/aws-sdk-go-v2/service/rekognition/types"
-	"github.com/kingztech2019/awsimaging/internal/awsclients"
+	"github.com/kingztech2019/awsimaging/awsclients"
 )
 
 // RekognitionClient wraps the AWS Rekognition client

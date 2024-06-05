@@ -8,7 +8,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/textract"
 	"github.com/aws/aws-sdk-go-v2/service/textract/types"
-	"github.com/kingztech2019/awsimaging/internal/awsclients"
+	"github.com/kingztech2019/awsimaging/awsclients"
 )
 
 // TextractClient wraps the AWS Textract client
