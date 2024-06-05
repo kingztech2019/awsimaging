@@ -132,6 +132,7 @@ import (
 	"github.com/kingztech2019/awsimaging/pkg/awsimagetools"
 )
 
+
 func main() {
 	region := "us-west-2"
 	accessKeyID := "your-access-key-id"
