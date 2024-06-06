@@ -48,6 +48,6 @@ func (u *S3Uploader) UploadToS3(base64Image, bucketName, imageName string) (*Upl
 		return nil, fmt.Errorf("failed to upload image to S3: %w", err)
 	}
 
-	url := fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", bucketName, "your-region", imageName)
+	url := fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", bucketName, u.client.Options().Region, imageName)
 	return &UploadResponse{URL: url}, nil
 }
