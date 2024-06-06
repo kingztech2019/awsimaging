@@ -10,28 +10,31 @@ import (
 )
 
 func main() {
-	awsClients, err := awsclients.NewAWSClients("us-west-2", "Your AWS-Access key", "Your AWS-secret-key")
+	region := "us-west-2"
+	bucketName := "awsimaging"
+	imageName := "your-image-name.jpg"
+	filePath := "image.jpeg"
+
+	// Initialize AWS clients
+	awsClients, err := awsclients.NewAWSClients(region)
 	if err != nil {
 		log.Fatalf("failed to create AWS clients: %v", err)
 	}
 
-	// Rekognition
-	rekClient := awsimagetools.NewRekognitionClient(awsClients)
-	rekResult, err := rekClient.DetectLabels("image.jpeg")
-	if err != nil {
-		log.Fatalf("failed to detect labels: %v", err)
-	}
+	base64Image := "Base64 image"
 
-	rekResultJSON, err := json.Marshal(rekResult)
+	// Textract
+	textractClient := awsimagetools.NewTextractClient(awsClients)
+	text, err := textractClient.ExtractText(base64Image)
 	if err != nil {
-		log.Fatalf("failed to encode Rekognition result to JSON: %v", err)
+		log.Fatalf("failed to extract text: %v", err)
 	}
-	fmt.Printf("Rekognition Result JSON: %s\n", string(rekResultJSON))
+	fmt.Printf("Extracted Text: %s\n", text)
 
 	// S3 Upload
 	s3Uploader := awsimagetools.NewS3Uploader(awsClients)
 
-	s3Url, err := s3Uploader.UploadToS3("base64 image", "bucket_name", "image_name", "region-name", "access-key", "secret-key")
+	s3Url, err := s3Uploader.UploadToS3(base64Image, bucketName, imageName)
 	if err != nil {
 		log.Fatalf("failed to upload image to S3: %v", err)
 	}
@@ -42,16 +45,17 @@ func main() {
 	}
 	fmt.Printf("S3 Upload URL JSON: %s\n", string(s3UrlJSON))
 
-	// Textract
-	textractClient := awsimagetools.NewTextractClient(awsClients)
-	extractedText, err := textractClient.ExtractTextFromImage("your base64 image")
+	// Rekognition
+	rekognitionClient := awsimagetools.NewRekognitionClient(awsClients)
+	rekResult, err := rekognitionClient.DetectLabels(filePath)
 	if err != nil {
-		log.Fatalf("failed to extract text from image: %v", err)
+		log.Fatalf("failed to detect labels: %v", err)
 	}
 
-	extractedTextJSON, err := json.Marshal(extractedText)
+	rekResultJSON, err := json.Marshal(rekResult)
 	if err != nil {
-		log.Fatalf("failed to encode extracted text to JSON: %v", err)
+		log.Fatalf("failed to encode Rekognition result to JSON: %v", err)
 	}
-	fmt.Printf("Extracted Text JSON: %s\n", string(extractedTextJSON))
+	fmt.Printf("Rekognition Result JSON: %s\n", string(rekResultJSON))
+
 }

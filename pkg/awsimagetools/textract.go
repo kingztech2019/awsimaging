@@ -21,18 +21,11 @@ func NewTextractClient(clients *awsclients.AWSClients) *TextractClient {
 	return &TextractClient{client: clients.TextractClient}
 }
 
-// ExtractTextResponse is the structured response for the Textract function
-type ExtractTextResponse struct {
-	Text string `json:"text"`
-}
-
-// This function `ExtractTextFromImage` is a method of the `TextractClient` struct. It takes a base64
-// encoded image as input, decodes it, and then uses the AWS Textract service to extract text from the
-// image.
-func (t *TextractClient) ExtractTextFromImage(base64Image string) (*ExtractTextResponse, error) {
+// ExtractText extracts text from a base64 encoded image
+func (t *TextractClient) ExtractText(base64Image string) (string, error) {
 	imageBytes, err := base64.StdEncoding.DecodeString(base64Image)
 	if err != nil {
-		return nil, fmt.Errorf("failed to decode base64 image: %w", err)
+		return "", fmt.Errorf("failed to decode base64 image: %w", err)
 	}
 
 	input := &textract.DetectDocumentTextInput{
@@ -43,7 +36,7 @@ func (t *TextractClient) ExtractTextFromImage(base64Image string) (*ExtractTextR
 
 	result, err := t.client.DetectDocumentText(context.TODO(), input)
 	if err != nil {
-		return nil, fmt.Errorf("failed to extract text: %w", err)
+		return "", err
 	}
 
 	var extractedText strings.Builder
@@ -54,5 +47,5 @@ func (t *TextractClient) ExtractTextFromImage(base64Image string) (*ExtractTextR
 		}
 	}
 
-	return &ExtractTextResponse{Text: extractedText.String()}, nil
+	return extractedText.String(), nil
 }

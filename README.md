@@ -62,6 +62,36 @@ awsimagetools/
 
 ## Usage
 
+### Setting Up AWS Credentials
+
+The AWS SDK for Go automatically searches for credentials using the default credential provider chain, which includes environment variables, shared credentials files, and EC2 instance metadata.
+
+Using Environment Variables
+Set the environment variables in your shell:
+
+```sh
+export AWS_ACCESS_KEY_ID=your-access-key-id
+export AWS_SECRET_ACCESS_KEY=your-secret-access-key
+export AWS_REGION=your-region
+
+```
+### Using Shared Credentials File
+
+Edit or create the ~/.aws/credentials file with the following content:
+
+```ini
+[default]
+aws_access_key_id = your-access-key-id
+aws_secret_access_key = your-secret-access-key
+
+```
+Edit or create the ~/.aws/config file with the following content:
+
+```ini
+[default]
+region = your-region
+
+```
 ### Initialize AWS Clients
 
 To use the package, you first need to initialize the AWS clients. You can do this by providing the AWS region and credentials.
@@ -76,10 +106,13 @@ import (
 )
 
 func main() {
-    awsClients, err := awsclients.NewAWSClients("us-west-2", "your-access-key-id", "your-secret-access-key")
-    if err != nil {
-        log.Fatalf("failed to create AWS clients: %v", err)
-    }
+
+     region := "us-west-2"
+    // Initialize AWS clients
+	awsClients, err := awsclients.NewAWSClients(region)
+	if err != nil {
+		log.Fatalf("failed to create AWS clients: %v", err)
+	}
 
     // Use the AWS clients...
 }
@@ -100,19 +133,27 @@ import (
 )
 
 func main() {
-    awsClients, err := awsclients.NewAWSClients("us-west-2", "your-access-key-id", "your-secret-access-key")
-    if err != nil {
-        log.Fatalf("failed to create AWS clients: %v", err)
-    }
+    region := "us-west-2"
+	filePath := "path/to/your/image.jpg"
 
-    rekClient := awsimagetools.NewRekognitionClient(awsClients)
-    result, err := rekClient.DetectLabels("path/to/your/image.jpg")
-    if err != nil {
-        log.Fatalf("failed to detect labels: %v", err)
-    }
-    for _, label := range result.Labels {
-        fmt.Printf("Label: %s, Confidence: %.2f\n", *label.Name, *label.Confidence)
-    }
+	// Initialize AWS clients
+	awsClients, err := awsclients.NewAWSClients(region)
+	if err != nil {
+		log.Fatalf("failed to create AWS clients: %v", err)
+	}
+
+    // Rekognition
+	rekognitionClient := awsimagetools.NewRekognitionClient(awsClients)
+	rekResult, err := rekognitionClient.DetectLabels(filePath)
+	if err != nil {
+		log.Fatalf("failed to detect labels: %v", err)
+	}
+
+	rekResultJSON, err := json.Marshal(rekResult)
+	if err != nil {
+		log.Fatalf("failed to encode Rekognition result to JSON: %v", err)
+	}
+	fmt.Printf("Rekognition Result JSON: %s\n", string(rekResultJSON))
 }
 ```
 
@@ -124,40 +165,33 @@ Use the S3 uploader to upload a base64 encoded image to an S3 bucket and get the
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"log"
-
-	"github.com/kingztech2019/awsimaging/awsclients"
+    "encoding/base64"
+    "log"
+    "github.com/kingztech2019/awsimaging/awsclients"
 	"github.com/kingztech2019/awsimaging/pkg/awsimagetools"
 )
 
-
 func main() {
-	region := "us-west-2"
-	accessKeyID := "your-access-key-id"
-	secretAccessKey := "your-secret-access-key"
-	bucketName := "your-s3-bucket-name"
+    region := "us-west-2"
+	bucketName := "awsimaging"
 	imageName := "your-image-name.jpg"
-	base64Image := "your-base64-encoded-image-string"
+	base64Image := "Your base64 Image"
 
-	awsClients, err := awsclients.NewAWSClients(region, accessKeyID, secretAccessKey)
+	// Initialize AWS clients
+	awsClients, err := awsclients.NewAWSClients(region)
 	if err != nil {
 		log.Fatalf("failed to create AWS clients: %v", err)
 	}
 
-	s3Uploader := awsimagetools.NewS3Uploader(awsClients)
-	s3Url, err := s3Uploader.UploadToS3(base64Image, bucketName, imageName, region, accessKeyID, secretAccessKey)
-	if err != nil {
-		log.Fatalf("failed to upload image to S3: %v", err)
-	}
+    s3Uploader := awsimagetools.NewS3Uploader(awsClients)
+    s3Url, err := s3Uploader.UploadToS3(base64Image, bucketName, imageName)
+    if err != nil {
+        log.Fatalf("failed to upload image to S3: %v", err)
+    }
 
-	s3UrlJSON, err := json.Marshal(s3Url)
-	if err != nil {
-		log.Fatalf("failed to encode S3 URL to JSON: %v", err)
-	}
-	fmt.Printf("S3 Upload URL JSON: %s\n", string(s3UrlJSON))
+    log.Printf("S3 Upload URL: %s", s3Url)
 }
+
 
 ```
 
@@ -176,18 +210,23 @@ import (
 )
 
 func main() {
-    awsClients, err := awsclients.NewAWSClients("us-west-2", "your-access-key-id", "your-secret-access-key")
-    if err != nil {
-        log.Fatalf("failed to create AWS clients: %v", err)
-    }
+
+   region := "us-west-2"
+   base64Image := "your-base64-encoded-image-string"
+
+   // Initialize AWS clients
+	awsClients, err := awsclients.NewAWSClients(region)
+	if err != nil {
+		log.Fatalf("failed to create AWS clients: %v", err)
+	}
 
     textractClient := awsimagetools.NewTextractClient(awsClients)
-    base64Image := "your-base64-encoded-image-string"
-    extractedText, err := textractClient.ExtractTextFromImage(base64Image)
+    text, err := textractClient.ExtractText(base64Image)
     if err != nil {
-        log.Fatalf("failed to extract text from image: %v", err)
+        log.Fatalf("failed to extract text: %v", err)
     }
-    fmt.Printf("Extracted Text:\n%s\n", extractedText)
+
+    log.Printf("Extracted Text: %s", text)
 }
 ```
 
