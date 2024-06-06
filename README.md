@@ -31,14 +31,6 @@ To install the `awsimaging` package, run:
 go get github.com/kingztech2019/awsimaging
 ```
 
-## Configuration
-
-Before using the package, you need to set up AWS credentials and specify the AWS region.
-
-## AWS Credentials
-
-You can provide AWS credentials via environment variables or by directly passing them when creating the `AWSClients`.
-
 ## Folder Structure
 
 The package is organized as follows:
