@@ -3,7 +3,6 @@ package awsclients
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/rekognition"
@@ -23,7 +22,7 @@ func NewAWSClients(region string) (*AWSClients, error) {
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
 		config.WithRegion(region),
 	)
-	log.Println(cfg.Credentials)
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to load configuration: %w", err)
 	}
